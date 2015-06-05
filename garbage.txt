@@ -1,0 +1,19 @@
+The repo was created in Exodus in the following way:
+	git init
+	git add .
+	git commit -m "Initial commit"
+	git remote add origin youruser@yourserver.com:/path/to/my_project.git
+	git push origin master
+
+In Eclipse the changes was pushed to remote repo (with the the committed changes in local master), in the following way
+	Team -> Push Branch 'master' 
+
+
+Creating branch
+---------------
+- Open Git perspective
+- select the repo
+- choose 'Switch To' -> 'New Branch' -> enter name for the branch 
+
+
+1

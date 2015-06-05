@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head><title>Express</title>
+<link rel="stylesheet" href="/stylesheets/style.css"></head>
+
+<body>
+<h1>Express</h1>
+<p>Welcome to Express</p>
+<!-- Wrapper-->
+<div id="wrapper">
+<!-- current record-->
+<div id="userInfo"></div>
+<h7>User List</h7>
+<p> <strong>Name: <span id='userInfoName'></span></strong>
+<br>
+<strong>age: <span id='userInfoAge'></span></strong>
+<br>
+<strong>Gender: <span id='userInfoGender'></span></strong>
+<br>
+<strong>Location: <spanid='userInfoLocation'></span></strong>
+<!--strong TextId:   <span id='userTextId'></span>-->
+<!--strong TextData: <span id='userTextData'></span>-->
+</p><h7>User List</h7>
+<div id="userList">
+<table>
+<thead>
+<th>UserName</th>
+<th>Email</th>
+<th>Delete?</th>
+<th>etc</th>
+</thead>
+<tbody></tbody>
+</table>
+</div>
+<!-- ADD USER-->
+<h7>Add User</h7>
+<div id="addUser"><fieldset>
+<input id="inputUserName" type="text" placeholder="Username">
+<input id="inputUserEmail" type="text" placeholder="Account">
+<input id="inputUserPassword" type="text" placeholder="Password">
+<br>
+<input id="inputUserFullname" type="text" placeholder="Full Name">
+<input id="inputUserAge" type="text" placeholder="Age">
+<br>
+<input id="inputUserLocation" type="text" placeholder="Location">
+<input id="inputUserGender" type="text" placeholder="gender">
+<br>
+<button id="btnAddUser">Add User</button>
+</fieldset>
+</div>
+<!-- /ADD USER-->
+</div>
+<!-- /WRAPPER -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js">
+</script>
+<script src="/javascripts/global.js"></script>
+</body>
+</html>

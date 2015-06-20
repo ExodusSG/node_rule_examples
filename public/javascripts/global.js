@@ -13,6 +13,9 @@ $(document).ready(function() {
     
     // Add User button click
     $('#btnAddUser').on('click', addUser);
+    
+    // Apply Rules button click
+    $('#btnApplyRule').on('click', ApplyRule);    
 
 });
 
@@ -152,4 +155,36 @@ function addUser(event) {
       // errorCount more than 0
     }
           
+};
+
+//Apply Rule
+function ApplyRule(event) {
+	// Prevent Link from Firing
+	event.preventDefault();
+    
+    // convert text_area input into an object
+    var textarea = $('#FactArea').val();
+    var linebreak = textarea.split('\n');
+    var length = linebreak.length;
+    var rule_fact = [];
+    for ( var i = 0 ; i<length ; i++){
+    	var itembreak = linebreak[i].split(":");
+    	if(itembreak.length) {
+    		rule_fact = rule_fact + linebreak[i];
+    	}
+    }
+    var rule_id = $('#rule_id').text().replace(/\s+/g, '');
+    var url_link = '/rules/'+rule_id;
+    // use AJAX to post
+    $.ajax({
+        type: 'POST',
+        data: JSON.parse(rule_fact),
+        url: url_link,
+        dataType: 'JSON'
+      }).done(function(response){
+       
+        if(response.msg !=''){
+          $('#ResultArea').val(response);
+        }
+      });
 };

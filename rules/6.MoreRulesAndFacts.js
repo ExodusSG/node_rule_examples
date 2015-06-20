@@ -1,11 +1,8 @@
 var express = require('express');
 var router = express.Router();	
 var RuleEngine = require('../index');
+var resp_text='';
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-var colors = require('colors');
-var RuleEngine = require('../index');
 var rules = [
     /**** Rule 1 ****/
     {
@@ -17,7 +14,7 @@ var rules = [
         },
         "consequence": function(R) {
             console.log("Rule 1 matched - blocks transactions below value 500. Rejecting payment.");
-            res.write("Rule 1 matched - blocks transactions below value 500. Rejecting payment.\n");
+            resp_text += ("Rule 1 matched - blocks transactions below value 500. Rejecting payment.\n");
             this.result = false;
             R.stop();
         }
@@ -32,7 +29,7 @@ var rules = [
         },
         "consequence": function(R) {
             console.log("Rule 2 matched - user credibility is more, then avoid further check. Accepting payment.");
-            res.write("Rule 2 matched - user credibility is more, then avoid further check. Accepting payment.\n");
+            resp_text += ("Rule 2 matched - user credibility is more, then avoid further check. Accepting payment.\n");
             this.result = true;
             R.stop();
         }
@@ -47,7 +44,7 @@ var rules = [
         },
         "consequence": function(R) {
             console.log("Rule 3 matched - filter American Express payment above 10000. Rejecting payment.");
-            res.write("Rule 3 matched - filter American Express payment above 10000. Rejecting payment.\n");
+            resp_text += ("Rule 3 matched - filter American Express payment above 10000. Rejecting payment.\n");
             this.result = false;
             R.stop();
         }
@@ -62,7 +59,7 @@ var rules = [
         },
         "consequence": function(R) {
             console.log("Rule 4 matched - reject the payment if cash card. Rejecting payment.");
-            res.write("Rule 4 matched - reject the payment if cash card. Rejecting payment.\n");
+            resp_text += ("Rule 4 matched - reject the payment if cash card. Rejecting payment.\n");
             this.result = false;
             R.stop();
         }
@@ -77,7 +74,7 @@ var rules = [
         },
         "consequence": function(R) {
             console.log("Rule 5 matched - reject if above 10000 and customer type is guest. Rejecting payment.");
-            res.write("Rule 5 matched - reject if above 10000 and customer type is guest. Rejecting payment.\n");
+            resp_text += ("Rule 5 matched - reject if above 10000 and customer type is guest. Rejecting payment.\n");
             this.result = false;
             R.stop();
         }
@@ -93,8 +90,8 @@ var rules = [
         "consequence": function(R) {
             console.log("Rule 6 matched - support rule written for blocking payment above 10000 from guests.");
             console.log("Process left to chain with rule 5.");
-            res.write("Rule 6 matched - support rule written for blocking payment above 10000 from guests.\n");
-            res.write("Process left to chain with rule 5.\n");
+            resp_text += ("Rule 6 matched - support rule written for blocking payment above 10000 from guests.\n");
+            resp_text += ("Process left to chain with rule 5.\n");
             this.customerType = "guest";
             R.next(); // the fact has been altered, so all rules will run again. No need to restart.
         }
@@ -109,7 +106,7 @@ var rules = [
         },
         "consequence": function(R) {
             console.log("Rule 7 matched - block payment for Mobile. Reject Payment.");
-            res.write("Rule 7 matched - block payment for Mobile. Reject Payment.\n");
+            resp_text += ("Rule 7 matched - block payment for Mobile. Reject Payment.\n");
             this.result = false;
             R.stop();
         }
@@ -124,7 +121,7 @@ var rules = [
         },
         "consequence": function(R) {
             console.log("Rule 8 matched - the event is not critical, so accept");
-            res.write("Rule 8 matched - the event is not critical, so accept\n");
+            resp_text += ("Rule 8 matched - the event is not critical, so accept\n");
             this.result = true;
             R.stop();
         }
@@ -141,7 +138,7 @@ var rules = [
         },
         "consequence": function(R) {
             console.log("Rule 9 matched - ip falls in the given list, then block. Rejecting payment.");
-            res.write("Rule 9 matched - ip falls in the given list, then block. Rejecting payment.\n");
+            resp_text += ("Rule 9 matched - ip falls in the given list, then block. Rejecting payment.\n");
             this.result = false;
             R.stop();
         }
@@ -157,7 +154,7 @@ var rules = [
         },
         "consequence": function(R) {
             console.log("Rule 10 matched - the user is malicious, then block. Rejecting payment.");
-            res.write("Rule 10 matched - the user is malicious, then block. Rejecting payment.\n");
+            resp_text += ("Rule 10 matched - the user is malicious, then block. Rejecting payment.\n");
             this.result = false;
             R.stop();
         }
@@ -259,94 +256,139 @@ var user8 = {
     "cardType": "Credit Card",
     "cardIssuer": "VISA",
 };
+
+/* GET Rule info page. */
+router.get('/', function(req, res, next) {	
+	var rule_fact = [];
+	var rule_desc = '';
+	
+	rule_fact += JSON.stringify(user1, null, 4);
+	rule_fact += ", ";
+	rule_fact += JSON.stringify(user2, null, 4);
+	rule_fact += ", ";
+	rule_fact += JSON.stringify(user3, null, 4);
+	rule_fact += ", ";
+	rule_fact += JSON.stringify(user4, null, 4);
+	rule_fact += ", ";
+	rule_fact += JSON.stringify(user5, null, 4);
+	rule_fact += ", ";
+	rule_fact += JSON.stringify(user6, null, 4);
+	rule_fact += ", ";
+	rule_fact += JSON.stringify(user7, null, 4);
+	rule_fact += ", ";
+	rule_fact += JSON.stringify(user8, null, 4);
+	rule_fact = "[" + rule_fact + "]";
+	
+	rule_desc = "This example shows combination with more rules and more user inputs. ";
+	rule_desc += "** Rule 1 : transaction minimum 500 **; ";
+	rule_desc += "** Rule 2 : high credibility customer - avoid checks and bypass **; ";
+	rule_desc += "** Rule 3 : block AME > 10000 **; ";
+	rule_desc += "** Rule 4 : block Cashcard Payment **; "; 
+	rule_desc += "** Rule 5 : block guest payment above 10000 **; "; 
+	rule_desc += "** Rule 6 : check is customer guest? **; ";
+	rule_desc += "** Rule 7 : block payment from specific app **; "; 
+	rule_desc += "** Rule 8 : check event risk score **; ";
+	rule_desc += "** Rule 9 : block ip range set **; ";
+	rule_desc += "** Rule 10 : check if user's name is blacklisted ** ";
+	res.render('rules', { title: 'Multiple Rules with  Multiple User Input Example',
+	  rule_id: 6,
+	  description: rule_desc,
+	  data: rule_fact });
+});
+
+/* Submit fact for rule process */
+router.post('/', function(req, res, next) {
+var colors = require('colors');
+var RuleEngine = require('../index');
 var R = new RuleEngine(rules);
 console.log("----------".blue);
 console.log("start execution of rules".blue);
 console.log("----------".blue);
-res.write("----------\n");
-res.write("start execution of rules\n");
-res.write("----------\n");
+resp_text = '';
+resp_text += ("----------\n");
+resp_text += ("start execution of rules\n");
+resp_text += ("----------\n");
 
 R.execute(user7, function(result) {
     if (result.result) {
     	console.log("Completed", "User7 Accepted".green);
-    	res.write("Completed " + "User7 Accepted\n");
+    	resp_text += ("Completed " + "User7 Accepted\n");
     }
     else {
     	console.log("Completed", "User7 Rejected".red);
-    	res.write("Completed " + "User7 Rejected\n");
+    	resp_text += ("Completed " + "User7 Rejected\n");
     }
 });
 R.execute(user1, function(result) {
     if (result.result) {
     	console.log("Completed", "User1 Accepted".green);
-    	res.write("Completed " + "User1 Accepted\n");
+    	resp_text += ("Completed " + "User1 Accepted\n");
     }
     else {
     	console.log("Completed", "User1 Rejected".red);
-    	res.write("Completed " + "User1 Rejected\n");
+    	resp_text += ("Completed " + "User1 Rejected\n");
     }
 });
 R.execute(user2, function(result) {
     if (result.result) {
     	console.log("Completed", "User2 Accepted".green);
-    	res.write("Completed " + "User2 Accepted\n");
+    	resp_text += ("Completed " + "User2 Accepted\n");
     }
     else {
     	console.log("Completed", "User2 Rejected".red);
-    	res.write("Completed " + "User2 Rejected\n");
+    	resp_text += ("Completed " + "User2 Rejected\n");
     }
 });
 R.execute(user3, function(result) {
     if (result.result) {
     	console.log("Completed", "User3 Accepted".green);
-    	res.write("Completed " + "User3 Accepted\n");
+    	resp_text += ("Completed " + "User3 Accepted\n");
     }
     else {
     	console.log("Completed", "User3 Rejected".red);
-    	res.write("Completed " + "User3 Rejected\n");
+    	resp_text += ("Completed " + "User3 Rejected\n");
     } 
 });
 R.execute(user4, function(result) {
     if (result.result) {
     	console.log("Completed", "User4 Accepted".green);
-    	res.write("Completed " + "User4 Accepted\n");
+    	resp_text += ("Completed " + "User4 Accepted\n");
     }
     else {
     	console.log("Completed", "User4 Rejected".red);
-    	res.write("Completed " + "User4 Rejected\n");
+    	resp_text += ("Completed " + "User4 Rejected\n");
     }
 });
 R.execute(user5, function(result) {
     if (result.result) {
     	console.log("Completed", "User5 Accepted".green);
-    	res.write("Completed " + "User5 Accepted\n");
+    	resp_text += ("Completed " + "User5 Accepted\n");
     }
     else {
     	console.log("Completed", "User5 Rejected".red);
-    	res.write("Completed " + "User5 Rejected\n");
+    	resp_text += ("Completed " + "User5 Rejected\n");
     }
 });
 R.execute(user6, function(result) {
     if (result.result) {
     	console.log("Completed", "User6 Accepted".green);
-    	res.write("Completed " + "User6 Accepted\n");
+    	resp_text += ("Completed " + "User6 Accepted\n");
     }
     else {
     	console.log("Completed", "User6 Rejected".red);
-    	res.write("Completed " + "User6 Rejected\n");
+    	resp_text += ("Completed " + "User6 Rejected\n");
     }
 });
 R.execute(user8, function(result) {
     if (result.result) {
     	console.log("Completed", "User8 Accepted".green);
-    	res.write("Completed " + "User8 Accepted\n");
+    	resp_text += ("Completed " + "User8 Accepted\n");
     }
     else {
     	console.log("Completed", "User8 Rejected".red);
-    	res.write("Completed " + "User8 Rejected\n");
+    	resp_text += ("Completed " + "User8 Rejected\n");
     }
-    res.send();
+    res.json(resp_text);
 });
 });
 module.exports = router;

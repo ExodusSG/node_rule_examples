@@ -1,0 +1,19 @@
+extends layout
+
+block content
+  h1= title 
+  h2 ID: <span id='rule_id'> #{rule_id} </span>
+  
+  // Wrapper
+  #wrapper
+    // current record
+    #RulefactInfo
+    Strong Rule_description: #{description}
+    p 
+        textarea#FactArea(name='rulesfact', rows = 10, cols = 50)= data 
+        p
+        button#btnApplyRule Apply Rule
+    p
+        textarea#ResultArea(name='rulesresult', rows = 5, cols = 50)= "" 
+        
+  // /WRAPPER 

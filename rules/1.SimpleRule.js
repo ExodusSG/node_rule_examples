@@ -2,8 +2,6 @@ var express = require('express');
 var router = express.Router();	
 var RuleEngine = require('../index');
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
 /* Sample Rule to block a transaction if its below 500 */
 var rule = {
     "condition": function(R) {
@@ -15,9 +13,6 @@ var rule = {
         R.stop();
     }
 };
-/* Creating Rule Engine instance and registering rule */
-var R = new RuleEngine();
-R.register(rule);
 /* Fact with less than 500 as transaction, and this should be blocked */
 var fact = {
     "name": "user4",
@@ -25,14 +20,29 @@ var fact = {
     "transactionTotal": 400,
     "cardType": "Credit Card"
 };
-R.execute(fact, function(data) {
+
+/* GET Rule info page. */
+router.get('/', function(req, res, next) {
+	  res.render('rules', { title: 'Simple Rule Example',
+		  rule_id: 1,
+		  description: "Block when transactionTotal < 500 ",
+		  data: JSON.stringify(fact, null, 4) });
+});
+
+/* Submit fact for rule process */
+router.post('/', function(req, res, next) {
+/* Creating Rule Engine instance and registering rule */
+var R = new RuleEngine();
+R.register(rule);
+
+R.execute(req.body, function(data) {
     if (data.result) {
         console.log("Valid transaction");
-        res.send("Valid transaction");
+        res.json("Valid transaction");
     } else {
         console.log("Blocked Reason:" + data.reason);
     /*    console.log(res); */
-        res.send("Blocked Reason:" + data.reason); 
+        res.json("Blocked Reason:" + data.reason); 
     }
 });
 });

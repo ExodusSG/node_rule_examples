@@ -178,7 +178,9 @@ function ApplyRule(event) {
     // use AJAX to post
     $.ajax({
         type: 'POST',
-        data: JSON.parse(rule_fact),
+//        data: JSON.parse(rule_fact),
+        data : rule_fact,
+        contentType: "application/json; charset=utf-8",
         url: url_link,
         dataType: 'JSON'
       }).done(function(response){

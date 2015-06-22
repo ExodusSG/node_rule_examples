@@ -301,94 +301,109 @@ router.post('/', function(req, res, next) {
 var colors = require('colors');
 var RuleEngine = require('../index');
 var R = new RuleEngine(rules);
-console.log("----------".blue);
-console.log("start execution of rules".blue);
-console.log("----------".blue);
-resp_text = '';
-resp_text += ("----------\n");
-resp_text += ("start execution of rules\n");
-resp_text += ("----------\n");
 
-R.execute(user7, function(result) {
-    if (result.result) {
-    	console.log("Completed", "User7 Accepted".green);
-    	resp_text += ("Completed " + "User7 Accepted\n");
-    }
-    else {
-    	console.log("Completed", "User7 Rejected".red);
-    	resp_text += ("Completed " + "User7 Rejected\n");
-    }
-});
-R.execute(user1, function(result) {
-    if (result.result) {
-    	console.log("Completed", "User1 Accepted".green);
-    	resp_text += ("Completed " + "User1 Accepted\n");
-    }
-    else {
-    	console.log("Completed", "User1 Rejected".red);
-    	resp_text += ("Completed " + "User1 Rejected\n");
-    }
-});
-R.execute(user2, function(result) {
-    if (result.result) {
-    	console.log("Completed", "User2 Accepted".green);
-    	resp_text += ("Completed " + "User2 Accepted\n");
-    }
-    else {
-    	console.log("Completed", "User2 Rejected".red);
-    	resp_text += ("Completed " + "User2 Rejected\n");
-    }
-});
-R.execute(user3, function(result) {
-    if (result.result) {
-    	console.log("Completed", "User3 Accepted".green);
-    	resp_text += ("Completed " + "User3 Accepted\n");
-    }
-    else {
-    	console.log("Completed", "User3 Rejected".red);
-    	resp_text += ("Completed " + "User3 Rejected\n");
-    } 
-});
-R.execute(user4, function(result) {
-    if (result.result) {
-    	console.log("Completed", "User4 Accepted".green);
-    	resp_text += ("Completed " + "User4 Accepted\n");
-    }
-    else {
-    	console.log("Completed", "User4 Rejected".red);
-    	resp_text += ("Completed " + "User4 Rejected\n");
-    }
-});
-R.execute(user5, function(result) {
-    if (result.result) {
-    	console.log("Completed", "User5 Accepted".green);
-    	resp_text += ("Completed " + "User5 Accepted\n");
-    }
-    else {
-    	console.log("Completed", "User5 Rejected".red);
-    	resp_text += ("Completed " + "User5 Rejected\n");
-    }
-});
-R.execute(user6, function(result) {
-    if (result.result) {
-    	console.log("Completed", "User6 Accepted".green);
-    	resp_text += ("Completed " + "User6 Accepted\n");
-    }
-    else {
-    	console.log("Completed", "User6 Rejected".red);
-    	resp_text += ("Completed " + "User6 Rejected\n");
-    }
-});
-R.execute(user8, function(result) {
-    if (result.result) {
-    	console.log("Completed", "User8 Accepted".green);
-    	resp_text += ("Completed " + "User8 Accepted\n");
-    }
-    else {
-    	console.log("Completed", "User8 Rejected".red);
-    	resp_text += ("Completed " + "User8 Rejected\n");
-    }
-    res.json(resp_text);
-});
+var rule_fact = req.body;
+if ((rule_fact.constructor === Array) && (rule_fact.length === 8)) {
+    var req_user1 = rule_fact[0];
+    var req_user2 = rule_fact[1];
+    var req_user3 = rule_fact[2];
+    var req_user4 = rule_fact[3];
+    var req_user5 = rule_fact[4];
+    var req_user6 = rule_fact[5];
+    var req_user7 = rule_fact[6];
+    var req_user8 = rule_fact[7];
+
+    console.log("----------".blue);
+    console.log("start execution of rules".blue);
+    console.log("----------".blue);
+    resp_text = '';
+    resp_text += ("----------\n");
+    resp_text += ("start execution of rules\n");
+    resp_text += ("----------\n");
+
+	R.execute(req_user7, function(result) {
+	    if (result.result) {
+	    	console.log("Completed", "User7 Accepted".green);
+	    	resp_text += ("Completed " + "User7 Accepted\n\n");
+	    }
+	    else {
+	    	console.log("Completed", "User7 Rejected".red);
+	    	resp_text += ("Completed " + "User7 Rejected\n\n");
+	    }
+	});
+	R.execute(req_user1, function(result) {
+	    if (result.result) {
+	    	console.log("Completed", "User1 Accepted".green);
+	    	resp_text += ("Completed " + "User1 Accepted\n\n");
+	    }
+	    else {
+	    	console.log("Completed", "User1 Rejected".red);
+	    	resp_text += ("Completed " + "User1 Rejected\n\n");
+	    }
+	});
+	R.execute(req_user2, function(result) {
+	    if (result.result) {
+	    	console.log("Completed", "User2 Accepted".green);
+	    	resp_text += ("Completed " + "User2 Accepted\n\n");
+	    }
+	    else {
+	    	console.log("Completed", "User2 Rejected".red);
+	    	resp_text += ("Completed " + "User2 Rejected\n\n");
+	    }
+	});
+	R.execute(req_user3, function(result) {
+	    if (result.result) {
+	    	console.log("Completed", "User3 Accepted".green);
+	    	resp_text += ("Completed " + "User3 Accepted\n\n");
+	    }
+	    else {
+	    	console.log("Completed", "User3 Rejected".red);
+	    	resp_text += ("Completed " + "User3 Rejected\n\n");
+	    } 
+	});
+	R.execute(req_user4, function(result) {
+	    if (result.result) {
+	    	console.log("Completed", "User4 Accepted".green);
+	    	resp_text += ("Completed " + "User4 Accepted\n\n");
+	    }
+	    else {
+	    	console.log("Completed", "User4 Rejected".red);
+	    	resp_text += ("Completed " + "User4 Rejected\n\n");
+	    }
+	});
+	R.execute(req_user5, function(result) {
+	    if (result.result) {
+	    	console.log("Completed", "User5 Accepted".green);
+	    	resp_text += ("Completed " + "User5 Accepted\n\n");
+	    }
+	    else {
+	    	console.log("Completed", "User5 Rejected".red);
+	    	resp_text += ("Completed " + "User5 Rejected\n\n");
+	    }
+	});
+	R.execute(req_user6, function(result) {
+	    if (result.result) {
+	    	console.log("Completed", "User6 Accepted".green);
+	    	resp_text += ("Completed " + "User6 Accepted\n\n");
+	    }
+	    else {
+	    	console.log("Completed", "User6 Rejected".red);
+	    	resp_text += ("Completed " + "User6 Rejected\n\n");
+	    }
+	});
+	R.execute(req_user8, function(result) {
+	    if (result.result) {
+	    	console.log("Completed", "User8 Accepted".green);
+	    	resp_text += ("Completed " + "User8 Accepted\n\n");
+	    }
+	    else {
+	    	console.log("Completed", "User8 Rejected".red);
+	    	resp_text += ("Completed " + "User8 Rejected\n\n");
+	    }
+	    res.json(resp_text);
+	});
+} else {
+	res.json("Wrong input !!!");
+}
 });
 module.exports = router;

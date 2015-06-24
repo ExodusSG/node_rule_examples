@@ -3,7 +3,8 @@ var router = express.Router();
 var RuleEngine = require('../index');
 /* Set of Rules to be applied */
 var rules = [{
-    "priority": 4,
+	"name": "rule4",
+	"priority": 4,
     "condition": function(R) {
         R.when(this.transactionTotal < 500);
     },
@@ -13,7 +14,8 @@ var rules = [{
         R.stop();
     }
 }, {
-    "priority": 10, // this will apply first
+	"name": "rule4",
+	"priority": 10, // this will apply first
     "condition": function(R) {
         R.when(this.cardType === "Debit");
     },
@@ -44,19 +46,35 @@ router.get('/', function(req, res, next) {
 
 /* Submit fact for rule process */
 router.post('/', function(req, res, next) {
-var RuleEngine = require('../index');
-/* Creating Rule Engine instance and registering rule */
-var R = new RuleEngine();
-R.register(rules);
-/* This fact will be blocked by the Debit card rule as its of more priority */
-R.execute(req.body, function(data) {
-    if (data.result) {
-        console.log("Valid transaction");
-        res.json("Valid transaction");
-    } else {
-        console.log("Blocked Reason:" + data.reason);
-        res.json("Blocked Reason:" + data.reason);
-    }
+	var db = req.db;
+	var collection = db.collection('rulelist');
+	collection.find({'name': 'rule4'}).toArray(	function(err, store){
+		if((err == null)&& (store.length > 0)) {
+			var rule_store = store[0]["store"];
+			var R1 = new RuleEngine();
+			R1.fromJSON(rule_store);
+			var rule_items = R1.findRules({"name": "rule4"});
+			if (rule_items.length > 0) {
+				/* Creating Rule Engine instance and registering rule */
+				var R = new RuleEngine();
+				R.register(rule_items);
+				/* This fact will be blocked by the Debit card rule as its of more priority */
+				R.execute(req.body, function(data) {
+					if (data.result) {
+						console.log("Valid transaction");
+						res.json("Valid transaction");
+					} else {
+						console.log("Blocked Reason:" + data.reason);
+						res.json("Blocked Reason:" + data.reason);
+					}
+				});
+				return;
+			}
+		}
+		res.json("Cannot find rule body!!!");	
+	});
 });
-});
-module.exports = router;
+
+/* Note: You have to define a variable to export router, rule, or fact etc, for others to use */
+var export_objects = {"rule": rules, "router": router};
+module.exports = export_objects;

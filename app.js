@@ -8,9 +8,12 @@ var async = require('async');
 // Database
 var mongo = require('mongoskin');
 var db = mongo.db("mongodb://localhost:27017/node_express/data", {native_parser:true});
+var TrelloMsg_db = mongo.db("mongodb://localhost:27017/MsgDB/data", {native_parser:true});
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var trello = require('./routes/trello');
+
 var RuleEngine = require('./index');
 var rules_obj = require('./routes/rules');
 rules = rules_obj.router; // Get the rules middleware
@@ -68,12 +71,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 // mongodb stuff
 app.use(function(req,res,next){
   req.db = db;
+  req.TrelloMsg_db = TrelloMsg_db;
   next();
 });
 
 app.use('/', routes);
 app.use('/users', users);
 app.use('/rules', rules);
+app.use('/trello', trello);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

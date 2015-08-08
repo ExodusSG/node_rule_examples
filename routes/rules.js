@@ -6,6 +6,7 @@ var rule3_obj = require('../rules/3.CascadingRules');
 var rule4_obj = require('../rules/4.PrioritizedRules');
 var rule5_obj = require('../rules/5.RecurssionWithRules');
 var rule6_obj = require('../rules/6.MoreRulesAndFacts');
+var LeaveType_obj = require('../rules/Rule_LeaveType');
 
 var rule1 = rule1_obj.router;
 var rule2 = rule2_obj.router;
@@ -13,6 +14,7 @@ var rule3 = rule3_obj.router;
 var rule4 = rule4_obj.router;
 var rule5 = rule5_obj.router;
 var rule6 = rule6_obj.router;
+var rule_leave_type = LeaveType_obj.router;
 
 /* GET for rule1 page. */
 router.use('/1', rule1);
@@ -43,5 +45,6 @@ var export_objects = {"rule1": rule1_obj.rule,
 		"rule4": rule4_obj.rule,
 		"rule5": rule5_obj.rule,
 		"rule6": rule6_obj.rule,
+		"leave_type": LeaveType_obj.rule,
 		"router": router};
 module.exports = export_objects;

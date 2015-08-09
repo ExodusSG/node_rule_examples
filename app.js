@@ -9,6 +9,7 @@ var async = require('async');
 var mongo = require('mongoskin');
 var db = mongo.db("mongodb://localhost:27017/node_express/data", {native_parser:true});
 var TrelloMsg_db = mongo.db("mongodb://localhost:27017/MsgDB/data", {native_parser:true});
+var HRMgmt_db = mongo.db("mongodb://localhost:27017/HRMgmtDB/data", {native_parser:true});
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -56,7 +57,16 @@ async.each(rule_idx, // 1st param is the array of index
 			if (err) return (err);
 		}
 );
-
+/* Get the HR resource information before detail process */
+var HRResource = {};
+HRMgmt_db.collection("HRResource").find().toArray(function(err, items){
+	if(items.length <= 0) {
+		console.log("Cannot find HR Resource information!")
+	} else {
+		HRResource = items[0];
+	}
+});    
+    
 var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -74,6 +84,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(function(req,res,next){
   req.db = db;
   req.TrelloMsg_db = TrelloMsg_db;
+  req.HRResource = HRResource;
   next();
 });
 

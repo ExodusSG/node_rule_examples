@@ -7,6 +7,7 @@ var rule4_obj = require('../rules/4.PrioritizedRules');
 var rule5_obj = require('../rules/5.RecurssionWithRules');
 var rule6_obj = require('../rules/6.MoreRulesAndFacts');
 var LeaveType_obj = require('../rules/Rule_LeaveType');
+var LeaveApproval_obj = require('../rules/Rule_LeaveApproval');
 
 var rule1 = rule1_obj.router;
 var rule2 = rule2_obj.router;
@@ -46,5 +47,6 @@ var export_objects = {"rule1": rule1_obj.rule,
 		"rule5": rule5_obj.rule,
 		"rule6": rule6_obj.rule,
 		"leave_type": LeaveType_obj.rule,
+		"leave_approval": LeaveApproval_obj.rule,
 		"router": router};
 module.exports = export_objects;

@@ -20,12 +20,12 @@ var rules_obj = require('./routes/rules');
 rules = rules_obj.router; // Get the rules middleware
 
 /* Settle the rules before processing */
-var rule_idx = [0, 1, 2, 3, 4, 5, 6];
+var rule_idx = [0, 1, 2, 3, 4, 5, 6, 7];
 var rule_names = ["rule1", "rule2", "rule3", "rule4", "rule5", "rule6",
-                  "leave_type"];
+                  "leave_type", "leave_approval"];
 var rule_items = [rules_obj.rule1, rules_obj.rule2, rules_obj.rule3,
                   rules_obj.rule4, rules_obj.rule5, rules_obj.rule6,
-                  rules_obj.leave_type];
+                  rules_obj.leave_type, rules_obj.leave_approval];
 async.each(rule_idx, // 1st param is the array of index
 		// 2nd param is the function that checks and save each rule into DB
 		function(idx, callback){

@@ -94,11 +94,8 @@ var export_objects = {
 				var leave_type = null;
 				var error = null;
 				if (data.result) {
-					console.log("\n[rule] This is a leave request" + data.report);
 					leave_type = data.leave_type;
-				} else {
-				    console.log("This is not a leave request." );
-				}
+				} 
 				callback(error, leave_type);
 			});
 	  	});

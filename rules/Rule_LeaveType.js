@@ -89,7 +89,7 @@ var export_objects = {
 			/* Creating Rule Engine instance and registering rule */
 			var R = new RuleEngine();
 			R.register(rule_item);
-					
+
 			R.execute(record, function(data) {
 				var leave_type = null;
 				var error = null;

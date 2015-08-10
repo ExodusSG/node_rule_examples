@@ -10,6 +10,7 @@ var leave_status_record = {}
 /* GET home page. */
 router.get('/', function(req, res, next) {
     var db = req.TrelloMsg_db;
+    var HRMgmt_db = req.HRMgmt_db;
     var TrelloCollection = req.query.collection;
     var MsgId = req.query.msgid;
     var HRResource = req.HRResource;
@@ -60,7 +61,7 @@ router.get('/', function(req, res, next) {
 		   			"leave_start_time": "FullDay",
 		   			"leave_end_date": Date(),
 		   			"leave_end_time": "FullDay",
-		   			"leave_request_status":	"processing",
+		   			"leave_request_status":	"In processing",
 		   			"leave_comment": "",
 		   			"leave_requset_message": item.msg_content,
 		   			"leave_msg_db": item.db_name,
@@ -94,6 +95,16 @@ router.get('/', function(req, res, next) {
 	   	    		"msg_destination": "trello card ID",
 	   	    		"msg_content": "msg in text format"
 	    	    };
+	    	    // Insert this leave record into HRLeaveRepository
+	    	    leave_record._id = leave_record.record_id;
+	            var collection = HRMgmt_db.collection("HRLeaveRepository");
+	            collection.insert(leave_record, function(err, result) {
+	                if (err) {
+	                    console.log(err);
+	                    return;
+	                }
+	                console.log("INSERT a leave record into HR repository.");
+	            });
 	    	    // Insert this request message into HR card
 	    	    var hr_leave_sending_msg = leave_sending_msg;
 	    	    hr_leave_sending_msg.msgID = ObjectID();
@@ -154,7 +165,17 @@ router.get('/', function(req, res, next) {
 	    		res.write("This is a leave approval message and it is: " + leave_approval);
 	    		res.send();
 	    		if(leave_approval != "Not decided"){
-		    	    //console.log(leave_status_record);
+		    	    // Update the leave record into HRLeaveRepository
+		    	    leave_record.leave_request_status = leave_approval;
+		            var collection = HRMgmt_db.collection("HRLeaveRepository");
+                    collection.updateById(leave_record._id,leave_record,function (err, result) {		            
+		                if (err) {
+		                    console.log(err);
+		                    return;
+		                }
+		                console.log("UPDATE a leave record in HR repository.");
+		            });
+	    			//console.log(leave_status_record);
 		    	    var leave_sending_msg = {
 		   	    		"db_name": "MsgDB",
 		   	    		"collection_name": "TrelloMsgSendingQueue",

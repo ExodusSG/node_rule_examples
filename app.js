@@ -5,6 +5,8 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var async = require('async');
+var process = require('process');
+
 // Database
 var mongo = require('mongoskin');
 var db = mongo.db("mongodb://localhost:27017/node_express/data", {native_parser:true});
@@ -67,6 +69,14 @@ HRMgmt_db.collection("HRResource").find().toArray(function(err, items){
 	}
 });    
     
+/* Create the collection of HRLeaveRepository before the operation */
+HRMgmt_db.createCollection("HRLeaveRepository", function(err, result) {
+    if (err) {
+        console.log(err);
+        process.exit(-1);// failed to create this collection, stop the process
+    }
+});
+
 var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -84,6 +94,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(function(req,res,next){
   req.db = db;
   req.TrelloMsg_db = TrelloMsg_db;
+  req.HRMgmt_db = HRMgmt_db;
   req.HRResource = HRResource;
   next();
 });

@@ -5,7 +5,8 @@ var parse = require('../rules/Rule_LeaveType');
 var approval = require('../rules/Rule_LeaveApproval');
 
 var leave_record = {};
-var leave_status_record = {}
+var leave_status_record = {};
+var DayRef = 0; // Define a reference offset date for demo purpose
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -50,23 +51,30 @@ router.get('/', function(req, res, next) {
 	
 		    	/* Prepare leave record here */
 		    	/*** Note: now we just hard code some leave record field for demo */
+	    		var tmp_date = new Date();
+	    		var tmp_msc = tmp_date.getTime();
+	    		var leave_date = new Date(tmp_msc + DayRef*1000*60*60*24);
+	    		DayRef++;
+	    		
 		    	leave_record = {
 		    		"db_name": "HRMgmtDB",
 		    		"collection_name": "HRLeaveRepository",
-		    		"record_id": ObjectID(),
-		    		"leave_requestor": item.msg_originator,
-		   			"leave_timestamp": item.msg_timestamp,
+		    		"_id": ObjectID(),
+		    		"requestor": item.msg_originator,
+		    		"approver": HRResource.supervisor,
+		   			"submit_time": item.msg_timestamp,
 		   			"leave_type": leave_type,
-		   			"leave_start_date": Date(),
-		   			"leave_start_time": "FullDay",
-		   			"leave_end_date": Date(),
-		   			"leave_end_time": "FullDay",
-		   			"leave_request_status":	"In processing",
-		   			"leave_comment": "",
-		   			"leave_requset_message": item.msg_content,
-		   			"leave_msg_db": item.db_name,
-		   			"leave_msg_collection": item.collection_name,
-		   			"leave_msg_id": item.primary_key
+		   			"start_date": leave_date,
+		   			"start_time": "FullDay",
+		   			"end_date": leave_date,
+		   			"end_time": "FullDay",
+		   			"duration": 1,
+		   			"status":	"In processing",
+		   			"comment": "",
+		   			"requset_message": item.msg_content,
+		   			"msg_db": item.db_name,
+		   			"msg_collection": item.collection_name,
+		   			"msg_id": item.primary_key
 		    	};
 	    	    //console.log(leave_record);
 		    	/* Prepare HR leave status record here */
@@ -74,8 +82,8 @@ router.get('/', function(req, res, next) {
 	    	    leave_status_record = {
 	    	    	"db_name": "HRMgmtDB",
 	    	    	"collection_name": "HRLeaveStatus",
-	    	    	"record_id": ObjectID(),
-	    	    	"staff": leave_record.leave_requestor,
+	    	    	"_id": ObjectID(),
+	    	    	"staff": leave_record.requestor,
 	    	    	"leave_card_id": HRResource.leave_card_id,
 	    	    	"hr_card_id": HRResource.hr_card_id,
 	    	    	"supervisor_card_id": HRResource.supervisor_card_id,
@@ -83,7 +91,7 @@ router.get('/', function(req, res, next) {
 	    	    	"leave_status": "processing",
 	    	    	"leave_record": leave_record,
 	    	    	"leave_outstanding_field": "",
-	    	    	"leave_record_id": leave_record.record_id	
+	    	    	"leave_record_id": leave_record._id	
 	    	    };
 	    	    //console.log(leave_status_record);
 	    	    var leave_sending_msg = {
@@ -91,12 +99,11 @@ router.get('/', function(req, res, next) {
 	   	    		"collection_name": "TrelloMsgSendingQueue",
 	   	    		"msgID": ObjectID(),
 	   	    		"msg_timestamp": Date(),
-	   	    		"msg_requestor": leave_record.leave_requestor,
+	   	    		"msg_requestor": leave_record.requestor,
 	   	    		"msg_destination": "trello card ID",
 	   	    		"msg_content": "msg in text format"
 	    	    };
 	    	    // Insert this leave record into HRLeaveRepository
-	    	    leave_record._id = leave_record.record_id;
 	            var collection = HRMgmt_db.collection("HRLeaveRepository");
 	            collection.insert(leave_record, function(err, result) {
 	                if (err) {
@@ -166,7 +173,7 @@ router.get('/', function(req, res, next) {
 	    		res.send();
 	    		if(leave_approval != "Not decided"){
 		    	    // Update the leave record into HRLeaveRepository
-		    	    leave_record.leave_request_status = leave_approval;
+		    	    leave_record.status = leave_approval;
 		            var collection = HRMgmt_db.collection("HRLeaveRepository");
                     collection.updateById(leave_record._id,leave_record,function (err, result) {		            
 		                if (err) {
@@ -181,7 +188,7 @@ router.get('/', function(req, res, next) {
 		   	    		"collection_name": "TrelloMsgSendingQueue",
 		   	    		"msgID": ObjectID(),
 		   	    		"msg_timestamp": Date(),
-		   	    		"msg_requestor": leave_record.leave_requestor,
+		   	    		"msg_requestor": leave_record.requestor,
 		   	    		"msg_destination": "trello card ID",
 		   	    		"msg_content": "msg in text format"
 		    	    };

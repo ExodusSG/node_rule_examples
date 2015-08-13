@@ -101,7 +101,7 @@ var rules = [
     	    var result1 = /\breject\b/i.test(res);
     	    if (result1 == false) {
     	    /* Check the word rejected */
-    	    	var result1 = /\brejectetd/i.test(res);
+    	    	var result1 = /\brejected\b/i.test(res);
     	    }
     	    if (result1 == false) {
         	    /* Check the word rejection */

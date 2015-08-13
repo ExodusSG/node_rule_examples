@@ -15,7 +15,8 @@
     "mongoskin": "~1.4.13",
     "morgan": "~1.5.1",
     "serve-favicon": "~2.2.0",
-    "underscore": ">= 1.7"
+    "underscore": ">= 1.7",
+    "process": "*"
   },
   "devDependencies": {
     "mocha": "1.6.0",

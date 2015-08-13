@@ -211,7 +211,7 @@ router.get('/', function(req, res, next) {
 		    	    sp_leave_sending_msg._id = sp_leave_sending_msg.msgID;
 		    	    sp_leave_sending_msg.msg_content = "You have " + leave_approval + " leave request from staff " + 
 		    	    	sp_leave_sending_msg.msg_requestor + "\n " + 
-		    	    	"[Request Info]: " + leave_record.leave_requset_message;
+		    	    	"[Request Info]: " + leave_record.requset_message;
 		    	    sp_leave_sending_msg.msg_destination = leave_status_record.supervisor_card_id;
 		    	    //console.log(sp_leave_sending_msg);
 		    	    db.collection(sp_leave_sending_msg.collection_name).insert(sp_leave_sending_msg, 
